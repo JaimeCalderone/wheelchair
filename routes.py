@@ -1,4 +1,3 @@
-from puente_H import motors
 import movement as mov
 import search
 import Buttons
@@ -7,92 +6,47 @@ import numpy as np
 import cv2 
 import time
 import math
-def stopmotors():
-	v=0
-	d="f"
-	m="a"
-	motors(m,d,v)
-	m="b"
-	motors(m,d,v)
+from cadira import move
 	
 def right(distance):
-	v=100
-	d="r"
-	m="a"
-	motors(m,d,v)
-	d="f"         
-	m="b"
-	motors(m,d,v)
+	move("R")
 	time.sleep(0.7)
-	v=65
-	d="f"
-	m="a"
-	motors(m,d,v)
-	m="b"
-	motors(m,d,v)
+	move("F")
 	if distance<5:
 		time.sleep(2.3)
 	else:
 		time.sleep(1.3)
-	v=100
-	d="f"
-	m="a"
-	motors(m,d,v)
-	d="r"         
-	m="b"
-	motors(m,d,v)
+	move("L")
 	time.sleep(0.7)
 	
 def left(distance):
-	v=100
-	d="f"
-	m="a"
-	motors(m,d,v)
-	d="r"         
-	m="b"
-	motors(m,d,v)
+	move("L")
 	time.sleep(0.7)
-	v=65
-	d="f"
-	m="a"
-	motors(m,d,v)
-	m="b"
-	motors(m,d,v)
+	move("F")
 	if distance<5:
 		time.sleep(2.3)
 	else:
 		time.sleep(1.3)
-	v=100
-	d="r"
-	m="a"
-	motors(m,d,v)
-	d="f"         
-	m="b"
-	motors(m,d,v)
+	move("R")
 	time.sleep(0.7)
 	
-	
-def move(distance,orientation,decodedObject,pos,cap,pi,pin,lost,memory):
-	if (distance<35 ):
+def rmove(distance,orientation,decodedObject,pos,cap,pi,pin,lost,memory):
+	if (distance<4 ):
 		print("routes distance: "+str(distance))
 		print("routes orientation: "+str(orientation))
 		if orientation=="right1" or orientation=="right2":
 			left(distance)
-			stopmotors()
+			move("S")
+			time.sleep(1)
 			print("VOLVEMOS A SEARCH")
 			search.s(decodedObject.data.decode("utf-8"),cap, pi,pin,memory)
 		elif orientation=="left1" or orientation=="left2":
 			right(distance)
-			stopmotors()
+			move("S")
+			time.sleep(1)
 			search.s(decodedObject.data.decode("utf-8"),cap, pi,pin,memory)
 			
-		v=80
-		d="f"
-		m="a"
-		motors(m,d,v)
-		v=80
-		m="b"
-		motors(m,d,v)
+		move("F")
 		first=False
 		if distance<10:
 			time.sleep(1.5)
@@ -102,10 +56,12 @@ def move(distance,orientation,decodedObject,pos,cap,pi,pin,lost,memory):
 			time.sleep(0.5)
 		else:
 			time.sleep(0.3)
-		stopmotors()
+		move("S")
+		time.sleep(1)
 		mov.gotodestination(decodedObject,pos,cap,first,pi,pin,lost,memory)
 	else:
-		stopmotors()
+		move("S")
+		time.sleep(1)
 		first=False
 		print("SELECCIONA OTRO DESTINO")
 		Buttons.main2(cap, pi,pin,memory)
@@ -139,6 +95,8 @@ def movememo(decodedObject,distance,orientation,dest,pos,cap,pi,pin,lost,memory,
 		print(b)
 		print("left")
 		left(distance)
+		move("S")
+		time.sleep(1)
 	elif a<b:
 		print("a: ")
 		print(a)
@@ -146,19 +104,15 @@ def movememo(decodedObject,distance,orientation,dest,pos,cap,pi,pin,lost,memory,
 		print(b)
 		print("right")
 		right(distance)
+		move("S")
+		time.sleep(1)
 	else:
 		print("distance MOVEMO: ")
 		print(distance)
 		print(el2[1]*1.10)
 		print(el2[1]*0.90)
 		if distance>el2[1]*1.10:
-			v=80
-			d="r"
-			m="a"
-			motors(m,d,v)
-			v=80
-			m="b"
-			motors(m,d,v)
+			move("B")
 			first=False
 			if distance<10:
 				time.sleep(1)
@@ -168,16 +122,11 @@ def movememo(decodedObject,distance,orientation,dest,pos,cap,pi,pin,lost,memory,
 				time.sleep(0.5)
 			else:
 				time.sleep(0.3)
-			stopmotors()
+			move("S")
+			time.sleep(1)
 			mov.gotomemodestination(decodedObject,pos,cap,first,pi,pin,lost,memory,el2,movememo,button)
 		elif distance<el2[1]*0.90:
-			v=80
-			d="f"
-			m="a"
-			motors(m,d,v)
-			v=80
-			m="b"
-			motors(m,d,v)
+			move("F")
 			first=False
 			if distance<10:
 				time.sleep(1)
@@ -187,23 +136,11 @@ def movememo(decodedObject,distance,orientation,dest,pos,cap,pi,pin,lost,memory,
 				time.sleep(0.5)
 			else:
 				time.sleep(0.3)
-			stopmotors()
+			move("S")
+			time.sleep(1)
 			mov.gotomemodestination(decodedObject,pos,cap,first,pi,pin,lost,memory,el2,movememo,button)
 		else:
 			search.s(button,cap, pi,pin,memory)
-			
-		
-		
-		
-def stop(decodedObject,pos,cap):
-	v=0
-	d="f"
-	m="a"
-	motors(m,d,v)
-	m="b"
-	motors(m,d,v)
-	first=False
-	mov.gotodestination(decodedObject,pos,cap,first,pi,pin,lost,memory,el2,movememo)
 
 		
 		

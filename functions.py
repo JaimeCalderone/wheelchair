@@ -37,6 +37,9 @@ def getSize(qrobject, totalpixels):
         distance = 1
         dist=1
     
+    print("----qrsize px: ", str(qarea))
+    print("----qrsize %: ", str(qrsize))
+    
     return distance, dist, qrsize
 
 

@@ -8,6 +8,7 @@ import numpy as np
 import cv2 
 import time
 import math
+from cadira import move
 
 def decode(im) : 
     # Find barcodes and QR codes
@@ -19,62 +20,36 @@ def decode(im) :
     #     print('object : ', obj,'\n')   
     return decodedObjects
     
-def stopmotors():
-	v=0
-	d="f"
-	m="a"
-	motors(m,d,v)
-	m="b"
-	motors(m,d,v)
-	
 def moveleft():
-    v=100
-    d="f"
-    m="a"
-    motors(m,d,v)
-    d="r"
-    m="b"
-    motors(m,d,v)
+    move("L")
     time.sleep(0.15)
-    stopmotors()
+    move("S")
     time.sleep(0.1)
 
 def moveright():
-    v=100
-    d="r"
-    m="a"
-    motors(m,d,v)
-    d="f"
-    m="b"
-    motors(m,d,v)
+    move("R")
     time.sleep(0.15)
-    stopmotors()
+    move("S")
     time.sleep(0.1)
 
 def moveleft2():
-    v=100
-    d="f"
-    m="a"
-    motors(m,d,v)
-    d="r"
-    m="b"
-    motors(m,d,v)
+    move("L")
+    print("MOVELEFT2")
     time.sleep(0.10)
-    stopmotors()
+    move("S")
 #    time.sleep(0.1)
 
 def moveright2():
-    v=100
-    d="r"
-    m="a"
-    motors(m,d,v)
-    d="f"
-    m="b"
-    motors(m,d,v)
+    move("R")
+    print("MOVERIGHT2")
     time.sleep(0.10)
-    stopmotors()
+    move("S")
 #    time.sleep(0.1)
     
+
+##################################################################################################################################
+#   This function performs the movements to arrive at the final destination
+##################################################################################################################################   
 def gotodestination(dest,pos,cap,first,pi,pin,lost,memory):
     
     print("dentro de godestination")
@@ -106,7 +81,7 @@ def gotodestination(dest,pos,cap,first,pi,pin,lost,memory):
             print("NO HAY NADAAAAAAA")
             print("lost: "+str(lost))
             if lost>12:
-            	search.s(dest.data.decode("utf-8"),cap, pi,pin,memory)
+            	search.s(dest.data.decode("utf-8"),cap, pi,pin,memory) #Search again for the destination
             lost+=1
             
 
@@ -137,25 +112,28 @@ def gotodestination(dest,pos,cap,first,pi,pin,lost,memory):
                 lost=0
                 print("Ancho imagen : "+str(width))
                 print("X media : "+str(xmedia))
-                if xmedia<260:
+                if xmedia<180:
                     moveleft2()
-                elif xmedia>390:
+                elif xmedia>780:
                     moveright2()
                 else:
-                	r.move(qrsize,orientation,dest,pos,cap,pi,pin,lost,memory)
+                	r.rmove(qrsize,orientation,dest,pos,cap,pi,pin,lost,memory)
                 first=False
             else:
-            	stopmotors()
+            	move("S")
              
         print(pos)
         if first:
-        	print("giro buscar ")
+        	print("giro buscar POS: ")
+        	print(pos)
         	if pos<=1500:
         		print("giro iq")
-        		moveleft()
+        		moveright()
+        		time.sleep(1)
         	else:
         		print("giro dr")
-        		moveright()
+        		moveleft()
+        		time.sleep(1)
         		
         
 
@@ -188,7 +166,7 @@ def gotodestination(dest,pos,cap,first,pi,pin,lost,memory):
     cv2.destroyAllWindows()
     
     
-    
+#The same as destination but using memory 
 def gotomemodestination(dest,pos,cap,first,pi,pin,lost,memory,el2,movememo,button):
     
     print("dentro de godestination MEMO")
@@ -220,7 +198,7 @@ def gotomemodestination(dest,pos,cap,first,pi,pin,lost,memory,el2,movememo,butto
             print("NO HAY NADAAAAAAA MEMO")
             print("lost: "+str(lost))
             if lost>12:
-            	search.s(dest.data.decode("utf-8"),cap, pi,pin)
+            	search.s(button ,cap, pi,pin,memory)
             lost+=1
             
 
@@ -259,7 +237,7 @@ def gotomemodestination(dest,pos,cap,first,pi,pin,lost,memory,el2,movememo,butto
                 	r.movememo(decodedObject,qrsize,orientation,dest,pos,cap,pi,pin,lost,memory,el2,movememo,button)
                 first=False
             else:
-            	stopmotors()
+            	move("S")
              
         print(pos)
         if first:

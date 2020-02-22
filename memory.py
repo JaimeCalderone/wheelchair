@@ -5,7 +5,7 @@ import numpy as np
 import cv2 
 import time
 import math
-from puente_H import motors
+from cadira import move
 
 def decode(im) : 
 	# Find barcodes and QR codes
@@ -33,25 +33,16 @@ def scan(cap, pi,pin):
 			print("servopos: ")
 			print(servopos[pos])
 			if pos==11:
-				v=100
-				d="f"
-				m="a"
-				motors(m,d,v)
-				d="r"         
-				m="b"
-				motors(m,d,v)
-				time.sleep(1.2)
-				#            ret, frame = cap.read()
-				v=0
-				d="f"
-				m="a"
-				motors(m,d,v)
-				m="b"
-				motors(m,d,v)
+				t_end = time.time() + 3.1#60 * 15
+				while time.time() < t_end:
+					move("R")
+				move("S")
+				time.sleep(0.5)
+				move("S")
 
 			pi.set_servo_pulsewidth(pin, servopos[pos])
 			pos+=1
-			time.sleep(0.18)
+			time.sleep(0.3)
 		    
 			for i in range(4):
 				cap.grab()

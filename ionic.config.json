@@ -1,7 +1,0 @@
-{
-  "name": "Ubícate",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular"
-}
